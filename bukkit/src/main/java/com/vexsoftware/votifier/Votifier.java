@@ -22,11 +22,14 @@ import java.io.*;
 import java.security.KeyPair;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.logging.*;
 
 import com.vexsoftware.votifier.crypto.RSAIO;
 import com.vexsoftware.votifier.crypto.RSAKeygen;
+import com.vexsoftware.votifier.model.Vote;
 import com.vexsoftware.votifier.model.VoteListener;
+import com.vexsoftware.votifier.model.VotifierEvent;
 import com.vexsoftware.votifier.net.VoteReceiver;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -39,7 +42,7 @@ import com.vexsoftware.votifier.model.ListenerLoader;
  * @author Blake Beaupain
  * @author Kramer Campbell
  */
-public class Votifier extends JavaPlugin {
+public class Votifier extends JavaPlugin implements VotifierInstance {
 
 	/** The logger instance. */
 	private static final Logger LOG = Logger.getLogger("Votifier");
@@ -170,7 +173,16 @@ public class Votifier extends JavaPlugin {
 			LOG.info("DEBUG mode enabled!");
 
 		try {
-			voteReceiver = new VoteReceiver(this, host, port);
+			voteReceiver = new VoteReceiver(this, host, port, new Consumer<Vote>() {
+				@Override
+				public void accept(final Vote vote) {
+					Bukkit.getScheduler().scheduleSyncDelayedTask(Votifier.this, new Runnable() {
+						public void run() {
+							Bukkit.getServer().getPluginManager().callEvent(new VotifierEvent(vote));
+						}
+					});
+				}
+			});
 			voteReceiver.start();
 
 			LOG.info("Votifier enabled.");
@@ -218,6 +230,11 @@ public class Votifier extends JavaPlugin {
 	 */
 	public List<VoteListener> getListeners() {
 		return listeners;
+	}
+
+	@Override
+	public Logger getLog() {
+		return getLogger();
 	}
 
 	/**

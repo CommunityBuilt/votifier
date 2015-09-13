@@ -25,15 +25,14 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.function.Consumer;
 import java.util.logging.*;
 import javax.crypto.BadPaddingException;
 
+import com.vexsoftware.votifier.VotifierInstance;
 import com.vexsoftware.votifier.model.Vote;
 import com.vexsoftware.votifier.model.VoteListener;
-import com.vexsoftware.votifier.model.VotifierEvent;
-import org.bukkit.Bukkit;
 
-import com.vexsoftware.votifier.Votifier;
 import com.vexsoftware.votifier.crypto.RSA;
 
 /**
@@ -43,11 +42,7 @@ import com.vexsoftware.votifier.crypto.RSA;
  * @author Kramer Campbell
  */
 public class VoteReceiver extends Thread {
-
-	/** The logger instance. */
-	private static final Logger LOG = Logger.getLogger("Votifier");
-
-	private final Votifier plugin;
+	private final VotifierInstance plugin;
 
 	/** The host to listen on. */
 	private final String host;
@@ -61,6 +56,8 @@ public class VoteReceiver extends Thread {
 	/** The running flag. */
 	private boolean running = true;
 
+	private Consumer<Vote> consumer;
+
 	/**
 	 * Instantiates a new vote receiver.
 	 * 
@@ -69,11 +66,12 @@ public class VoteReceiver extends Thread {
 	 * @param port
 	 *            The port to listen on
 	 */
-	public VoteReceiver(final Votifier plugin, String host, int port)
+	public VoteReceiver(final VotifierInstance plugin, String host, int port, Consumer<Vote> consumer)
 			throws Exception {
 		this.plugin = plugin;
 		this.host = host;
 		this.port = port;
+		this.consumer = consumer;
 
 		initialize();
 	}
@@ -83,11 +81,11 @@ public class VoteReceiver extends Thread {
 			server = new ServerSocket();
 			server.bind(new InetSocketAddress(host, port));
 		} catch (Exception ex) {
-			LOG.log(Level.SEVERE,
+			plugin.getLog().log(Level.SEVERE,
 					"Error initializing vote receiver. Please verify that the configured");
-			LOG.log(Level.SEVERE,
+			plugin.getLog().log(Level.SEVERE,
 					"IP address and port are not already in use. This is a common problem");
-			LOG.log(Level.SEVERE,
+			plugin.getLog().log(Level.SEVERE,
 					"with hosting services and, if so, you should check with your hosting provider.",
 					ex);
 			throw new Exception(ex);
@@ -104,13 +102,12 @@ public class VoteReceiver extends Thread {
 		try {
 			server.close();
 		} catch (Exception ex) {
-			LOG.log(Level.WARNING, "Unable to shut down vote receiver cleanly.");
+			plugin.getLog().log(Level.WARNING, "Unable to shut down vote receiver cleanly.");
 		}
 	}
 
 	@Override
 	public void run() {
-
 		// Main loop.
 		while (running) {
 			try {
@@ -121,7 +118,7 @@ public class VoteReceiver extends Thread {
 				InputStream in = socket.getInputStream();
 
 				// Send them our version.
-				writer.write("VOTIFIER " + Votifier.getInstance().getVersion());
+				writer.write("VOTIFIER " + plugin.getVersion());
 				writer.newLine();
 				writer.flush();
 
@@ -130,7 +127,7 @@ public class VoteReceiver extends Thread {
 				in.read(block, 0, block.length);
 
 				// Decrypt the block.
-				block = RSA.decrypt(block, Votifier.getInstance().getKeyPair()
+				block = RSA.decrypt(block, plugin.getKeyPair()
 						.getPrivate());
 				int position = 0;
 
@@ -160,46 +157,37 @@ public class VoteReceiver extends Thread {
 				vote.setTimeStamp(timeStamp);
 
 				if (plugin.isDebug())
-					LOG.info("Received vote record -> " + vote);
+					plugin.getLog().info("Received vote record -> " + vote);
 
 				// Dispatch the vote to all listeners.
-				for (VoteListener listener : Votifier.getInstance()
-						.getListeners()) {
+				for (VoteListener listener : plugin.getListeners()) {
 					try {
 						listener.voteMade(vote);
 					} catch (Exception ex) {
 						String vlName = listener.getClass().getSimpleName();
-						LOG.log(Level.WARNING,
+						plugin.getLog().log(Level.WARNING,
 								"Exception caught while sending the vote notification to the '"
 										+ vlName + "' listener", ex);
 					}
 				}
 
-				// Call model in a synchronized fashion to ensure that the
-				// custom model runs in the
-				// the main server thread, not this one.
-				plugin.getServer().getScheduler()
-						.scheduleSyncDelayedTask(plugin, new Runnable() {
-							public void run() {
-								Bukkit.getServer().getPluginManager()
-										.callEvent(new VotifierEvent(vote));
-							}
-						});
+				// Have the consumer accept the vote
+				consumer.accept(vote);
 
 				// Clean up.
 				writer.close();
 				in.close();
 				socket.close();
 			} catch (SocketException ex) {
-				LOG.log(Level.WARNING, "Protocol error. Ignoring packet - "
+				plugin.getLog().log(Level.WARNING, "Protocol error. Ignoring packet - "
 						+ ex.getLocalizedMessage());
 			} catch (BadPaddingException ex) {
-				LOG.log(Level.WARNING,
+				plugin.getLog().log(Level.WARNING,
 						"Unable to decrypt vote record. Make sure that that your public key");
-				LOG.log(Level.WARNING,
+				plugin.getLog().log(Level.WARNING,
 						"matches the one you gave the server list.", ex);
 			} catch (Exception ex) {
-				LOG.log(Level.WARNING,
+				plugin.getLog().log(Level.WARNING,
 						"Exception caught while receiving a vote notification",
 						ex);
 			}

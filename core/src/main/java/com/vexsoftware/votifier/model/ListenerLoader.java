@@ -15,15 +15,8 @@ public class ListenerLoader {
 	/** The logger instance. */
 	private static final Logger LOG = Logger.getLogger("Votifier");
 
-	/**
-	 * Loads all listener class files from a directory.
-	 * 
-	 * @param directory
-	 *            The directory
-	 */
-	public static List<VoteListener> load(String directory) /* throws Exception */{
+	public static List<VoteListener> load(File dir) {
 		List<VoteListener> listeners = new ArrayList<VoteListener>();
-		File dir = new File(directory);
 
 		// Verify configured vote listener directory exists
 		if (!dir.exists()) {
@@ -43,10 +36,12 @@ public class ListenerLoader {
 					"Error while configuring listener class loader", ex);
 			return listeners;
 		}
+
 		for (File file : dir.listFiles()) {
 			if (!file.getName().endsWith(".class")) {
 				continue; // Only load class files!
 			}
+
 			String name = file.getName().substring(0,
 					file.getName().lastIndexOf("."));
 
@@ -61,12 +56,7 @@ public class ListenerLoader {
 				listeners.add(listener);
 				LOG.info("Loaded vote listener: "
 						+ listener.getClass().getSimpleName());
-			}
-			/*
-			 * Catch the usual definition and dependency problems with a loader
-			 * and skip the problem listener.
-			 */
-			catch (Exception ex) {
+			} catch (Exception ex) {
 				LOG.log(Level.WARNING, "Error loading '" + name
 						+ "' listener! Listener disabled.");
 			} catch (Error ex) {
@@ -74,6 +64,18 @@ public class ListenerLoader {
 						+ "' listener! Listener disabled.");
 			}
 		}
+
 		return listeners;
+	}
+
+	/**
+	 * Loads all listener class files from a directory.
+	 * 
+	 * @param directory
+	 *            The directory
+	 */
+	public static List<VoteListener> load(String directory) /* throws Exception */{
+		File dir = new File(directory);
+		return load(dir);
 	}
 }

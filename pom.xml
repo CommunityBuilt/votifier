@@ -4,15 +4,34 @@
 
     <groupId>com.vexsoftware</groupId>
     <artifactId>votifier</artifactId>
-    <version>1.9</version>
+    <version>1.x-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
         <module>bukkit</module>
         <module>core</module>
+        <module>sponge</module>
     </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.16.4</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.12</version>
+                <scope>provided</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>

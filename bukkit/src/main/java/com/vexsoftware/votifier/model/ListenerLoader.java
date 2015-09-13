@@ -4,7 +4,6 @@ import java.io.File;
 import java.net.*;
 import java.util.*;
 import java.util.logging.*;
-import com.vexsoftware.votifier.Votifier;
 
 /**
  * Loads vote listeners. Listeners that cannot be instantiated will be skipped.

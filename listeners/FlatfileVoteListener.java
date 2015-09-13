@@ -1,10 +1,10 @@
+import com.vexsoftware.votifier.model.Vote;
+import com.vexsoftware.votifier.model.VoteListener;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import com.vexsoftware.votifier.model.Vote;
-import com.vexsoftware.votifier.model.VoteListener;
 
 /**
  * A vote listener that logs to a file.

@@ -25,7 +25,7 @@ import java.security.KeyPair;
 import java.util.List;
 import java.util.function.Consumer;
 
-@Plugin(id = "Votifier", name = "Votifier", version = "1.9")
+@Plugin(id = "Votifier", name = "Votifier", version = "2.0")
 public class Votifier implements VotifierInstance {
     @Getter
     private static Votifier instance;

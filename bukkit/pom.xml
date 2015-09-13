@@ -10,7 +10,7 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>bukkit</artifactId>
+    <artifactId>votifier-bukkit</artifactId>
     <version>2.0</version>
 
     <repositories>
@@ -30,7 +30,7 @@
 
         <dependency>
             <groupId>com.vexsoftware</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>votifier-core</artifactId>
             <version>2.0</version>
         </dependency>
     </dependencies>

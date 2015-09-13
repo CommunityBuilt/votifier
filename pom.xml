@@ -4,11 +4,12 @@
 
     <groupId>com.vexsoftware</groupId>
     <artifactId>votifier</artifactId>
-    <version>1.x</version>
+    <version>1.9</version>
     <packaging>pom</packaging>
 
     <modules>
         <module>bukkit</module>
+        <module>core</module>
     </modules>
 
     <properties>

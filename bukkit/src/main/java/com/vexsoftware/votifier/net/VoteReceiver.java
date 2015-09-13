@@ -175,8 +175,8 @@ public class VoteReceiver extends Thread {
 					}
 				}
 
-				// Call event in a synchronized fashion to ensure that the
-				// custom event runs in the
+				// Call model in a synchronized fashion to ensure that the
+				// custom model runs in the
 				// the main server thread, not this one.
 				plugin.getServer().getScheduler()
 						.scheduleSyncDelayedTask(plugin, new Runnable() {

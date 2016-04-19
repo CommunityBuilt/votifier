@@ -47,7 +47,7 @@
     </dependencies>
 
     <build>
-        <finalName>${parent.artifactId}</finalName>
+        <finalName>${artifactId}</finalName>
         <defaultGoal>clean package</defaultGoal>
 
         <resources>

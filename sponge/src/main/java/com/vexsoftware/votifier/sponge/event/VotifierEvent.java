@@ -1,6 +1,7 @@
-package com.vexsoftware.votifier.model;
+package com.vexsoftware.votifier.sponge.event;
 
-import com.vexsoftware.votifier.Votifier;
+import com.vexsoftware.votifier.model.Vote;
+import com.vexsoftware.votifier.sponge.Votifier;
 import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.impl.AbstractEvent;

@@ -1,15 +1,16 @@
-package com.vexsoftware.votifier;
+package com.vexsoftware.votifier.sponge;
 
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
-import com.vexsoftware.votifier.config.Config;
+import com.vexsoftware.votifier.VotifierInstance;
+import com.vexsoftware.votifier.sponge.config.Config;
 import com.vexsoftware.votifier.config.JsonConfig;
 import com.vexsoftware.votifier.crypto.RSAIO;
 import com.vexsoftware.votifier.crypto.RSAKeygen;
 import com.vexsoftware.votifier.model.ListenerLoader;
 import com.vexsoftware.votifier.model.Vote;
 import com.vexsoftware.votifier.model.VoteListener;
-import com.vexsoftware.votifier.model.VotifierEvent;
+import com.vexsoftware.votifier.sponge.event.VotifierEvent;
 import com.vexsoftware.votifier.net.VoteReceiver;
 import lombok.Getter;
 import org.slf4j.Logger;

@@ -1,6 +1,7 @@
-package com.vexsoftware.votifier.config;
+package com.vexsoftware.votifier.sponge.config;
 
 import com.google.gson.annotations.SerializedName;
+import com.vexsoftware.votifier.config.JsonConfig;
 import lombok.Getter;
 
 public class Config extends JsonConfig {

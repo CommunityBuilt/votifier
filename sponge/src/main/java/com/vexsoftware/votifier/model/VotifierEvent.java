@@ -1,6 +1,8 @@
 package com.vexsoftware.votifier.model;
 
+import com.vexsoftware.votifier.Votifier;
 import org.spongepowered.api.event.Cancellable;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.impl.AbstractEvent;
 
 public class VotifierEvent extends AbstractEvent implements Cancellable {
@@ -24,4 +26,9 @@ public class VotifierEvent extends AbstractEvent implements Cancellable {
     public Vote getVote() {
         return vote;
     }
+
+	@Override
+	public Cause getCause () {
+		return Votifier.getCause();
+	}
 }

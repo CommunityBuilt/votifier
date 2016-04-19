@@ -14,21 +14,24 @@ import com.vexsoftware.votifier.net.VoteReceiver;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
+import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
-import org.spongepowered.api.service.config.ConfigDir;
 
 import java.io.File;
 import java.security.KeyPair;
 import java.util.List;
 import java.util.function.Consumer;
 
-@Plugin(id = "Votifier", name = "Votifier", version = "2.0")
+@Plugin(id = "com.vexsoftware", name = "Votifier", version = "2.1", description = "A plugin for receiving online votes.")
 public class Votifier implements VotifierInstance {
     @Getter
     private static Votifier instance;
+	@Getter
+	private static Cause cause;
 
     @Inject
     @Getter
@@ -56,6 +59,7 @@ public class Votifier implements VotifierInstance {
 
     public Votifier() {
         instance = this;
+		cause = Cause.source(this).build();
     }
 
     @Listener
@@ -131,7 +135,7 @@ public class Votifier implements VotifierInstance {
 
     @Override
     public String getVersion() {
-        return container.getVersion();
+        return container.getVersion().isPresent() ? container.getVersion().get() : "UNKNOWN";
     }
 
     @Override

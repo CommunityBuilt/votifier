@@ -5,12 +5,12 @@
     <parent>
         <artifactId>votifier</artifactId>
         <groupId>com.vexsoftware</groupId>
-        <version>1.x-SNAPSHOT</version>
+        <version>2.x</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>examples</artifactId>
-    <version>2.0</version>
+    <version>2.1</version>
 
     <repositories>
         <repository>

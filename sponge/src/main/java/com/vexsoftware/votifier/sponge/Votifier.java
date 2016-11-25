@@ -27,7 +27,7 @@ import java.security.KeyPair;
 import java.util.List;
 import java.util.function.Consumer;
 
-@Plugin(id = "com.vexsoftware", name = "Votifier", version = "2.1", description = "A plugin for receiving online votes.")
+@Plugin(id = "votifier", name = "Votifier", version = "2.1", description = "A plugin for receiving online votes.")
 public class Votifier implements VotifierInstance {
     @Getter
     private static Votifier instance;

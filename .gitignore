@@ -42,3 +42,9 @@ debug.log
 # Doxygen
 /docs/html
 debug.txt
+
+/sponge/target
+
+/bukkit/target
+/examples/target
+/core/target
